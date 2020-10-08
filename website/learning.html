@@ -1,0 +1,436 @@
+---
+layout: jcci
+title: SPARTA - Nexus Learning
+id: 1
+---
+
+<script type="text/javascript">
+    var token = document.cookie.substr(6);
+
+		function getCapabilities(Url, callback){
+                var token = document.cookie.substr(6);
+                $.ajax({
+                        url: Url+'/getCapabilities',
+                        dataType: "text",
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        //headers: {'X-Auth-Token': token, 'Cache-Control':'no-cache'}, // Pide CORS
+                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        success:function(result){
+						                  result = $.parseXML(result);
+
+                              var resources = $(result).find('resources')
+                              var base = $.trim(resources.attr('base'))
+                              var resource = $(resources).find('resource')
+                              var partner = $(resources).attr('name')
+
+                              var iDiv_columns = document.getElementById('columns_'+partner)
+                              var isnew = false
+                              if(iDiv_columns == null) {
+                                  var iDiv_columns = document.createElement('div');
+                                iDiv_columns.id = 'columns_'+partner
+                                  iDiv_columns.className="columns"
+                                  iDiv_columns.style.marginTop = "10px"
+                                  isnew=true
+                                }
+                              else{
+                                    iDiv_columns.innerHTML=''
+                                }
+
+                              var iDiv = document.createElement('div');
+                              iDiv.id = partner
+                              iDiv.className="column is-one-fifth"
+                              var iDiv_title = document.createElement('p');
+                              var a_title = document.createElement('span');
+                              a_title.setAttribute('name', partner)
+                              a_title.setAttribute('anchorsid',"anchors")
+							  var linkText = document.createTextNode(partner);
+							  a_title.appendChild(linkText)
+                              iDiv_title.id = "div_title"
+                              iDiv_title.className="title"
+                              iDiv_title.append(a_title)
+                              iDiv.appendChild(iDiv_title);
+                              iDiv_columns.appendChild(iDiv);
+
+                              var iDiv_title = document.createElement('p');
+                              iDiv_title.innerHTML += "(live data)"
+                              iDiv_title.style="font-size:14px"
+                              iDiv.appendChild(iDiv_title);
+                              iDiv_columns.appendChild(iDiv);
+
+                              var res = $(resources).find('method').find('result')
+
+                              var iDiv = document.createElement('div');
+                              iDiv.id = partner+"_textarea"
+                              iDiv.className="column is-four-fifths"
+                              var iP_title= document.createElement('p');
+                                        iP_title.innerHTML  = "<b>Description:</b>"
+                              iDiv.append(iP_title)
+                              var serv = res.find('datainfo').find('Description')
+                                                            $(serv).find('item').each(function(index2,element2){
+                                                              var iP= document.createElement('p');
+                                                                iP.textContent = $(element2).text()
+                                          iDiv.append(iP)
+                              })
+                              var btc_getData = document.createElement('button');
+                              btc_getData.id=partner+"_getLearningData"
+                              btc_getData.className="button is-link"
+                              btc_getData.textContent="Learning Data"
+                              btc_getData.addEventListener("click", function(){getLearningData(Url);})
+                              iDiv.append(btc_getData)
+
+                              var btc_getTools = document.createElement('button');
+                              btc_getTools.id=partner+"_getLearningApp"
+                              btc_getTools.className="button is-link"
+                              btc_getTools.textContent="Learning Tools"
+                              btc_getTools.style.marginLeft = "30px"; 
+                              btc_getTools.addEventListener("click", function(){getLearningTools(Url);})
+                              iDiv.append(btc_getTools)
+
+                              var btc_getService = document.createElement('button');
+                              btc_getService.id=partner+"_getLearningService"
+                              btc_getService.className="button is-link"
+                              btc_getService.textContent="Learning Service"
+                              btc_getService.style.marginLeft = "30px"; 
+                              btc_getService.addEventListener("click", function(){getLearningServices(Url);})
+                              iDiv.append(btc_getService)
+
+                              var btc_getInteraction = document.createElement('button');
+                              btc_getInteraction.id=partner+"_getLearningInteraction"
+                              btc_getInteraction.className="button is-link"
+                              btc_getInteraction.textContent="Learning Interactive"
+                              btc_getInteraction.style.marginLeft = "30px"; 
+                              btc_getInteraction.addEventListener("click", function(){getLearningInteraction(Url);})
+                              iDiv.append(btc_getInteraction)
+
+                              iDiv_columns.appendChild(iDiv);
+                              if(isnew){
+                                  document.getElementById('wadl_result').appendChild(iDiv_columns)
+                                  var iDiv_line = document.createElement('div');
+                                  iDiv_line.className="border"
+                                  document.getElementById('wadl_result').appendChild(iDiv_line)
+                              }
+ 						            
+ 							if (callback) callback();
+ 						}
+                })
+		
+    }
+    
+
+    function getLearningData(Url){
+                $.ajax({
+                        url: Url+'/getLearningData',
+                        dataType: "text",
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        success:function(result){
+                                result = $.parseXML(result);
+                                var resources = $(result).find('resources')
+                                var partner = $(resources).attr('name')
+                                $(result).find('datainfo').each(function(index, element){
+                                        var field = $(element)
+                                        var upd = field.find('updated_date').text()
+                                        var iDiv = document.getElementById(partner+'_textarea')
+                                        iDiv.innerHTML=''
+                                        var data = field.find('data')
+                                        var iTable= document.createElement('table');
+                                        var fields=["version","name","description","hours","level","publicprivate", "price","access","contact"];
+                                        iTable.border=1
+                                        var row= iTable.insertRow(0);
+                                        for (i=0;i<fields.length; i++){
+                                          var cell= row.insertCell(i)
+                                          cell.innerHTML = "<b>"+fields[i]+"</b>";
+                                }
+                                $(data).find('item').each(function(index2,element2){
+                                        var row= iTable.insertRow();
+                                        for (i=0;i<fields.length; i++){
+                                          var el =  $(element2).find(fields[i]).text();
+                                          var cell= row.insertCell(i);
+                                          if(i==2){
+                                          	if(el.includes("http")){
+                                          		cell.innerHTML="<a href="+el+" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else if(i==3){
+                                          	if(el.includes("@")){
+                                          		cell.innerHTML="<a href=\"mailto:"+el+"\" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else{
+                                  		  	cell.innerHTML=el;
+                                  		  }
+                                  }})
+                                iDiv.appendChild(iTable);
+                                var iP_updated= document.createElement('p');
+                                iP_updated.innerHTML  = "Last update: "+ upd;
+                                iDiv.appendChild(iP_updated);
+                                var btc_getDescription = document.createElement('button');
+                                btc_getDescription.id=partner+"_getCapabilities"
+                                btc_getDescription.className="button is-link"
+                                btc_getDescription.textContent="Back"
+                                btc_getDescription.addEventListener("click", function(){getCapabilities(Url);})
+                                iDiv.append(btc_getDescription)
+                })}})};
+
+
+    function getLearningTools(Url){
+                $.ajax({
+                        url: Url+'/getLearningTools',
+                        dataType: "text",
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        success:function(result){
+                                result = $.parseXML(result);
+                                var resources = $(result).find('resources')
+                                var partner = $(resources).attr('name')
+                                $(result).find('datainfo').each(function(index, element){
+                                        var field = $(element)
+                                        var upd = field.find('updated_date').text()
+                                        var iDiv = document.getElementById(partner+'_textarea')
+                                        iDiv.innerHTML=''
+                                        var data = field.find('data')
+                                        var iTable= document.createElement('table');
+                                        var fields=["version","name","description","hours","level","publicprivate", "price","access","contact"];
+                                        iTable.border=1
+                                        var row= iTable.insertRow(0);
+                                        for (i=0;i<fields.length; i++){
+                                          var cell= row.insertCell(i)
+                                          cell.innerHTML = "<b>"+fields[i]+"</b>";
+                                }
+                                $(data).find('item').each(function(index2,element2){
+                                        var row= iTable.insertRow();
+                                        for (i=0;i<fields.length; i++){
+                                          var el =  $(element2).find(fields[i]).text();
+                                          var cell= row.insertCell(i);
+                                          if(i==2){
+                                          	if(el.includes("http")){
+                                          		cell.innerHTML="<a href="+el+" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else if(i==3){
+                                          	if(el.includes("@")){
+                                          		cell.innerHTML="<a href=\"mailto:"+el+"\" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else{
+                                  		  	cell.innerHTML=el;
+                                  		  }
+                                  }})
+                                iDiv.appendChild(iTable);
+                                var iP_updated= document.createElement('p');
+                                iP_updated.innerHTML  = "Last update: "+ upd;
+                                iDiv.appendChild(iP_updated);
+                                var btc_getDescription = document.createElement('button');
+                                btc_getDescription.id=partner+"_getCapabilities"
+                                btc_getDescription.className="button is-link"
+                                btc_getDescription.textContent="Back"
+                                btc_getDescription.addEventListener("click", function(){getCapabilities(Url);})
+                                iDiv.append(btc_getDescription)
+                })}})};
+
+
+    function getLearningServices(Url){
+                $.ajax({
+                        url: Url+'/getLearningServices',
+                        dataType: "text",
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        success:function(result){
+                                result = $.parseXML(result);
+                                var resources = $(result).find('resources')
+                                var partner = $(resources).attr('name')
+                                $(result).find('datainfo').each(function(index, element){
+                                        var field = $(element)
+                                        var upd = field.find('updated_date').text()
+                                        var iDiv = document.getElementById(partner+'_textarea')
+                                        iDiv.innerHTML=''
+                                        var data = field.find('data')
+                                        var iTable= document.createElement('table');
+                                        var fields=["version","name","description","hours","level","publicprivate", "price","access","contact"];
+                                        iTable.border=1
+                                        var row= iTable.insertRow(0);
+                                        for (i=0;i<fields.length; i++){
+                                          var cell= row.insertCell(i)
+                                          cell.innerHTML = "<b>"+fields[i]+"</b>";
+                                }
+                                $(data).find('item').each(function(index2,element2){
+                                        var row= iTable.insertRow();
+                                        for (i=0;i<fields.length; i++){
+                                          var el =  $(element2).find(fields[i]).text();
+                                          var cell= row.insertCell(i);
+                                          if(i==2){
+                                          	if(el.includes("http")){
+                                          		cell.innerHTML="<a href="+el+" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else if(i==3){
+                                          	if(el.includes("@")){
+                                          		cell.innerHTML="<a href=\"mailto:"+el+"\" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else{
+                                  		  	cell.innerHTML=el;
+                                  		  }
+                                  }})
+                                iDiv.appendChild(iTable);
+                                var iP_updated= document.createElement('p');
+                                iP_updated.innerHTML  = "Last update: "+ upd;
+                                iDiv.appendChild(iP_updated);
+                                var btc_getDescription = document.createElement('button');
+                                btc_getDescription.id=partner+"_getCapabilities"
+                                btc_getDescription.className="button is-link"
+                                btc_getDescription.textContent="Back"
+                                btc_getDescription.addEventListener("click", function(){getCapabilities(Url);})
+                                iDiv.append(btc_getDescription)
+                })}})};
+
+
+    function getLearningInteraction(Url){
+                $.ajax({
+                        url: Url+'/getLearningInteraction',
+                        dataType: "text",
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        success:function(result){
+                                result = $.parseXML(result);
+                                var resources = $(result).find('resources')
+                                var partner = $(resources).attr('name')
+                                $(result).find('datainfo').each(function(index, element){
+                                        var field = $(element)
+                                        var upd = field.find('updated_date').text()
+                                        var iDiv = document.getElementById(partner+'_textarea')
+                                        iDiv.innerHTML=''
+                                        var data = field.find('data')
+                                        var iTable= document.createElement('table');
+                                        var fields=["version","name","description","hours","level","publicprivate", "price","access","contact"];
+                                        iTable.border=1
+                                        var row= iTable.insertRow(0);
+                                        for (i=0;i<fields.length; i++){
+                                          var cell= row.insertCell(i)
+                                          cell.innerHTML = "<b>"+fields[i]+"</b>";
+                                }
+                                $(data).find('item').each(function(index2,element2){
+                                        var row= iTable.insertRow();
+                                        for (i=0;i<fields.length; i++){
+                                          var el =  $(element2).find(fields[i]).text();
+                                          var cell= row.insertCell(i);
+                                          if(i==2){
+                                          	if(el.includes("http")){
+                                          		cell.innerHTML="<a href="+el+" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else if(i==3){
+                                          	if(el.includes("@")){
+                                          		cell.innerHTML="<a href=\"mailto:"+el+"\" target=\"_blank\">"+el+"</a>";
+                                          	}
+                                          	else{
+                                          		cell.innerHTML=el;
+                                          	}
+                                  		  }
+                                  		  else{
+                                  		  	cell.innerHTML=el;
+                                  		  }
+                                  }})
+                                iDiv.appendChild(iTable);
+                                var iP_updated= document.createElement('p');
+                                iP_updated.innerHTML  = "Last update: "+ upd;
+                                iDiv.appendChild(iP_updated);
+                                var btc_getDescription = document.createElement('button');
+                                btc_getDescription.id=partner+"_getCapabilities"
+                                btc_getDescription.className="button is-link"
+                                btc_getDescription.textContent="Back"
+                                btc_getDescription.addEventListener("click", function(){getCapabilities(Url);})
+                                iDiv.append(btc_getDescription)
+                })}})};
+
+	function getMenu(){
+		offsetAnchor();
+		 el = $('#learning_menu')	 
+		 var div= document.createElement('div');
+		 div.className="navbar-dropdown is-boxed"
+		 $('span[anchorsid="anchors"]').each(function() {
+			 var ref= document.createElement('a');
+			 var linkText = document.createTextNode($( this ).text());
+		     ref.appendChild(linkText)
+			 ref.className="navbar-item pure-menu-link"
+			 ref.title=$( this ).text()
+			 ref.href="Learning.html#"+$( this ).text()
+			 div.append(ref)
+			});
+	 	el.append(div)
+	 	return true;
+	};
+
+    Url = 'XXX.XXX.XXX.XXX'
+
+    window.onload = function() {
+	    getMenu()
+    	getCapabilities(Url, getMenu)
+    } 
+</script>
+
+
+<script type="text/javascript">
+function offsetAnchor() {
+    if (location.hash.length !== 0) {
+        window.scrollTo(window.scrollX, window.scrollY - 100);
+    }
+}
+
+// This will capture hash changes while on the page
+$(window).on("hashchange", function () {
+    offsetAnchor();
+});
+
+</script>
+
+
+<div id="Workbench">
+<section class="section is-medium">
+  <div class="container">
+
+  <div class="content" id="wadl_result">
+  <h1 class="title has-text-black">Partners</h1>
+  </div>
+
+<div id="columns_sample" class="columns" style="margin-top: 10px">
+  <div id="sample" class="column is-one-fifth">
+    <p id="div_title" class="title"><span anchorsid="anchors" name="sample">CompanyName</span></p><p style="font-size:14px"></p>
+  </div>
+  <div id="sample_text" class="column is-four-fifths">
+  <div id="sample_textarea" class="column content">
+    <p><b>Description Company:</b> None</p></div>    <br><br>
+  <input id="open_sample1" value="Learning Data" class="button is-link"  type="button">
+  <input id="open_sample2" value="Learning Tools" class="button is-link" style="margin-left: 25px" type="button">
+  <input id="open_sample3" value="Learning Service" class="button is-link" style="margin-left: 25px" type="button">
+  <input id="open_sample4" value="Learning Interactive" class="button is-link" style="margin-left: 25px" type="button">
+</div></div>
+
+<div class="border"></div>
+
+
+
+</div>
+</section>
+</div>

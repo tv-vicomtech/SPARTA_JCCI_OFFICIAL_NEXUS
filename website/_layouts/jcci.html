@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }}</title>
+	<style>	
+	.border{
+		width: 100%;
+		border-bottom: 3px solid #000000;
+	}
+	</style>
+    <link rel="stylesheet" href="{{ 'assets/css/all.min.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ 'assets/css/custom.css' | relative_url }}">	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="images/sparta-logo.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  
+  <body>
+  
+  <nav class="navbar is-fixed-top">
+  <div class="navbar-brand">
+	<a class="navbar-item logo-top" href="/"><strong><img src="images/sparta-logo-rectangle.png"></strong></a>
+	
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarSPARTA">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span> 
+    </a>
+  </div>
+  
+  <div id="navbarSPARTA" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="index.html" class="pure-menu-link">JCCI Home</a>
+	  
+	  {% if page.id == 1 %}
+      <div class="navbar-item has-dropdown is-hoverable" id="learning_menu">
+	    <a class="navbar-link" href="learning.html">
+		Learning Nexus
+		</a>
+	  </div>
+	  {% else %}
+      <a class="navbar-item" href="learning.html" class="pure-menu-link">Learning Nexus</a>
+	  {% endif %}
+	  
+	  {% if page.id == 2 %}
+      <div class="navbar-item has-dropdown is-hoverable" id="workbench_menu">
+	    <a class="navbar-link" href="nexus.html">
+		Workbench Nexus
+		</a>
+	  </div>
+	  {% else %}
+      <a class="navbar-item" href="nexus.html" class="pure-menu-link">Workbench Nexus</a>
+	  {% endif %}
+	  
+	  {% if page.id == 3 %}
+      <div class="navbar-item has-dropdown is-hoverable" id="cyberrange_menu">
+	    <a class="navbar-link" href="cyberrange.html">
+		CyberRange Nexus
+		</a>
+	  </div>
+	  {% else %}
+      <a class="navbar-item" href="cyberrange.html" class="pure-menu-link">CyberRange Nexus</a>
+	  {% endif %}
+	  
+      <a class="navbar-item" href="jcci_documents.html" class="pure-menu-link">Documents</a>
+	  
+      <a class="navbar-item" href="jcci_contact.html" class="pure-menu-link">Contact</a>
+	
+      <!-- <a class="navbar-item" href="https://www.sparta.eu/" target="_blank" class="pure-menu-link">Sparta</a> -->
+
+	</div>
+	<div class="navbar-end" id="end_btn">
+	</div>
+  </div>
+  </nav>
+  
+  <div class="mainContent">
+  {{ content }}
+  </div>
+  {% include footer.html %} 
+  <script type="text/javascript" id="cookieinfo"
+	src="//cookieinfoscript.com/js/cookieinfo.min.js"
+	data-cookie="CookieInfoScript"
+	data-text-align="left"
+       data-close-text="Got it!">
+</script>
+
+  </body>
+</html>
+
+
+<script>
+	function getCookie(cname) {
+	  var name = cname + "=";
+	  var decodedCookie = decodeURIComponent(document.cookie);
+	  var ca = decodedCookie.split(';');
+	  for(var i = 0; i <ca.length; i++) {
+	    var c = ca[i];
+	    while (c.charAt(0) == ' ') {
+	      c = c.substring(1);
+	    }
+	    if (c.indexOf(name) == 0) {
+	      return c.substring(name.length, c.length);
+	    }
+	  }
+	  return "";
+	}
+	document.addEventListener('DOMContentLoaded', () => {
+
+		var token = getCookie(token)
+
+		if(token==null || token=="")
+		{
+			var url = new URL(window.location.href);
+			var token = url.searchParams.get("token");
+			document.cookie = "token=" + token;
+		}
+
+		var end_btn = document.getElementById('end_btn')
+		var a_btn = document.createElement('a');
+
+		a_btn.className="button is-primary navbar-item"
+
+		if(token == null || token==""){
+			a_btn.href="jcci_login.html"
+			var name = document.createTextNode("Login");
+		}
+		else{
+			a_btn.href="jcci_logout.html"
+			var name = document.createTextNode("Logout");
+		}
+		a_btn.appendChild(name)
+		end_btn.append(a_btn)
+
+  // Get all "navbar-burger" elements
+  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+  // Check if there are any navbar burgers
+  if ($navbarBurgers.length > 0) {
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach( el => {
+      el.addEventListener('click', () => {
+
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
+  }
+
+});
+</script>

@@ -1,0 +1,7 @@
+---
+layout: none
+permalink: .well-known/security.txt
+---
+
+Contact: mailto:security@sparta.eu
+

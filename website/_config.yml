@@ -1,0 +1,90 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+title: SPARTA
+email: contact@sparta.eu
+description: >- # this means to ignore newlines until "baseurl:"
+  SPARTA aims to establish and operate a pilot for an
+  EU Cybersecurity Competence Network. Strongly guided by strategic
+  opportunities, impactful challenges, and measurable progress metrics, it will
+  set up unique collaboration means, leading the way in developing and
+  implementing a common cybersecurity research and innovation roadmap, building
+  transformative capabilities and forming world-leading expertise centres.
+baseurl: "" # the subpath of your site, e.g. /blog
+twitter_username: "@sparta_eu"
+linkedin_username: "company/sparta-eu"
+instagram_username: "sparta_eu"
+github_username:  xxx
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-paginate-v2
+sass:
+  load_paths:
+    - lib/bulma/bulma-0.7.1
+    - lib/bulma/bulma-o-steps
+  style: compressed # possible values: nested expanded compact compressed
+
+collections:
+  papers:
+    output: true
+    sort_by: date
+  demos:
+    output: true
+  podcasts:
+    output: true
+  news:
+    output: true
+    sort_by: date
+  events:
+    output: true
+    sort_by: date
+  roadmap:
+    output: false
+    sort_by: date
+
+pagination:
+  enabled: true
+  debug: false
+  collection: 'posts'
+  per_page: 10
+  permalink: '/page/:num'
+  title: ':title - page :num'
+  limit: 0
+
+# Include into processing.
+include:
+    - .well-known
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
+defaults:
+  -
+    scope:
+      path:            "project/private/**/*.*"
+    values:
+      sitemap:         false

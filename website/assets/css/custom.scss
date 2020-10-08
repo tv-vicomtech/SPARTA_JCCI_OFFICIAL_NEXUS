@@ -1,0 +1,33 @@
+---
+---
+
+@charset "utf-8";
+
+// 1. Import the initial variables
+@import "sass/utilities/initial-variables";
+@import "sass/utilities/functions";
+
+// 2. Set brand colors
+$light-white: rgba(245, 245, 245, 0.3);
+$medium-white: rgba(245, 245, 245, 0.7);
+
+$dark-red: rgba(146, 10, 17, 1);
+$medium-red: rgba(189, 14, 22, 1);
+
+// 3. Update Bulma's global variables
+// $grey-dark: $medium-white;
+// $grey-light: $light-white;
+$primary: $dark-red;
+$link: $medium-red;
+$success: rgba(227, 237, 211, 0.9);
+
+//Steps colors
+$steps-completed-color: #98c73a;
+
+@import "sass/utilities/derived-variables";
+
+@import "bulma";
+@import "bulma-steps.sass";
+
+
+@import "main";
