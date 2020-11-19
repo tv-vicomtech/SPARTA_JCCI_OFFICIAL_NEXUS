@@ -6,7 +6,22 @@ id: 2
 
 
 <script type="text/javascript">
-    var token = document.cookie.substr(6);
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+    var token = getCookie("token") 
 
     function getMenu(){
         offsetAnchor();
@@ -33,7 +48,7 @@ id: 2
                         dataType: "text",
                         contentType: "text/xml; charset=\"utf-8\"",
                         //headers: {'X-Auth-Token': token, 'Cache-Control':'no-cache'}, // Pide CORS
-                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        headers: {'X-Auth-Token': token},
                         success:function(result){
 						                  result = $.parseXML(result);
 
@@ -139,7 +154,7 @@ id: 2
                         url: Url+'/getData',
                         dataType: "text",
                         contentType: "text/xml; charset=\"utf-8\"",
-                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        headers: {'X-Auth-Token': token},
                         success:function(result){
                                 result = $.parseXML(result);
                                 var resources = $(result).find('resources')
@@ -201,7 +216,7 @@ id: 2
                         url: Url+'/getTools',
                         dataType: "text",
                         contentType: "text/xml; charset=\"utf-8\"",
-                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        headers: {'X-Auth-Token': token},
                         success:function(result){
                                 result = $.parseXML(result);
                                 var resources = $(result).find('resources')
@@ -263,7 +278,7 @@ id: 2
                         url: Url+'/getServices',
                         dataType: "text",
                         contentType: "text/xml; charset=\"utf-8\"",
-                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        headers: {'X-Auth-Token': token},
                         success:function(result){
                                 result = $.parseXML(result);
                                 var resources = $(result).find('resources')
@@ -325,7 +340,7 @@ id: 2
                         url: Url+'/getInteraction',
                         dataType: "text",
                         contentType: "text/xml; charset=\"utf-8\"",
-                        headers: {'X-Auth-Token': token, 'Accept-Encoding': '*/*'},
+                        headers: {'X-Auth-Token': token},
                         success:function(result){
                                 result = $.parseXML(result);
                                 var resources = $(result).find('resources')
@@ -381,7 +396,7 @@ id: 2
                                 iDiv.append(btc_getDescription)
                 })}})};
 
-    Url = 'XXX.XXX.XXX.XXX'
+    Url = 'https://10.200.20.53:1030'
     
     window.onload = function() {
       getMenu()
