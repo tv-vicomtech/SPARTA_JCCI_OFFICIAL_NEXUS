@@ -122,7 +122,7 @@ function getCookie(cname) {
 function eraseKeyrock() {
   token = getCookie("token")
   document.cookie = "token=";
-  location.replace("https://10.200.20.53:3443/auth/external_logout?_method=DELETE&client_id=793ca8c9-67c1-42af-8529-6719534a119a&redirect_uri=http://10.200.20.53:4000/index.html")
+  location.replace("https://[keyrockIP]/auth/external_logout?_method=DELETE&client_id=793ca8c9-67c1-42af-8529-6719534a119a&redirect_uri=http://[nexusIP]/index.html")
 }
 </script>
 
