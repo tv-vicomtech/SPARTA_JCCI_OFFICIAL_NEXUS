@@ -9,3 +9,8 @@ If you want build your own Nexus and access to the SPARTA JCCI cluster, you can 
 1) ```docker build -t nexus .```
 
 2) ```docker run -p 4000:4000 --name nexus -d nexus```
+
+
+<ins>Copyright (c) 2021 Digital Security Department at Vicomtech</ins>
+
+<ins>Please read LICENSE file.</ins>
